@@ -1,5 +1,7 @@
 package ch.bzz.controller;
 
+import ch.bzz.generated.model.LoginProject200Response;
+import ch.bzz.generated.model.LoginRequest;
 import ch.bzz.repository.ProjectRepository;
 import ch.bzz.controller.Project;  // ou ch.bzz.controller.Project selon ton projet
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 import ch.bzz.util.JwtUtil;
+import ch.bzz.generated.api.ProjectApi;
 
 
 
@@ -23,14 +26,11 @@ public class ProjectApiController implements ProjectApi {
         this.jwtUtil = jwtUtil;
     }
 
-    /**
-     * REGISTER: créer un nouveau projet (avec mot de passe hashé)
-     */
     @Override
-    public ResponseEntity<Void> createProject(LoginRequest loginRequest) {
+    public ResponseEntity<Void> createProject(ch.bzz.generated.model.LoginRequest loginRequest) {
         // Vérifie si le projet existe déjà
         if (projectRepository.existsById(loginRequest.getProjectName())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409 : projet déjà existant
+            return ResponseEntity.status(401).build();
         }
 
         // Crée et sauvegarde le projet
@@ -43,11 +43,8 @@ public class ProjectApiController implements ProjectApi {
         return ResponseEntity.status(HttpStatus.CREATED).build(); // 201 Created
     }
 
-    /**
-     * LOGIN: vérifie les identifiants et renvoie un JWT
-     */
     @Override
-    public ResponseEntity<LoginProject200Response> loginProject(LoginRequest loginRequest) {
+    public ResponseEntity<ch.bzz.generated.model.LoginProject200Response> loginProject(LoginRequest loginRequest) {
         Project project = projectRepository.findById(loginRequest.getProjectName()).orElse(null);
 
         // Si le projet n’existe pas
@@ -65,11 +62,7 @@ public class ProjectApiController implements ProjectApi {
 
         // Construit la réponse
         LoginProject200Response response = new LoginProject200Response();
-        response.setToken(token);
-        response.setProjectName(project.getProjectName());
-
+        response.setAccessToken(token);
         return ResponseEntity.ok(response); // 200 OK avec le token
     }
-
-
 }
