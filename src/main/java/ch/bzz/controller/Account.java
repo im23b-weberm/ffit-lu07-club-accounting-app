@@ -29,4 +29,6 @@ public class Account {
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_name", nullable = false)
     private Project project;
+
+
 }
