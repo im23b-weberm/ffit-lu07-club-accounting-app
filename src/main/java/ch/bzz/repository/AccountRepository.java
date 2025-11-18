@@ -1,8 +1,10 @@
 package ch.bzz.repository;
 
 import ch.bzz.controller.Account;
+import ch.bzz.controller.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
@@ -11,5 +13,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     // Correct method to get all accounts for a project
     List<Account> findByProject_ProjectName(String projectName);
+
+    Optional<Account> findByAccountNumberAndProject(Long number, Project project);
+    void deleteByAccountNumberAndProject(Long number, Project project);
 
 }
