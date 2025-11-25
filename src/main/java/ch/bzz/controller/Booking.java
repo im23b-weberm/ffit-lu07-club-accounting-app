@@ -21,6 +21,9 @@ public class Booking {
     @Column(name = "id")
     private Long id;    // PK
 
+    @Column(name = "booking_number", nullable = false)
+    private Integer bookingNumber;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "date", nullable = false)
     private Date date;
